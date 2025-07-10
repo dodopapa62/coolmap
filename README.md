@@ -1,1 +1,1 @@
-# coolmap2
+# coolmap
