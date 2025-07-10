@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>쿨맵 - 무더위 쉼터 정보</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=4f194c81f867010ed24ad3e64281e2b2"></script>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f9f9f9; }
+    header { background: #007ACC; color: white; padding: 1rem; text-align: center; font-size: 1.5rem; }
+    #map { width: 100%; height: 80vh; }
+    .info { padding: 1rem; font-size: 1rem; background: white; }
+  </style>
+</head>
+<body>
+  <header>쿨맵 - 내 주변 무더위 쉼터</header>
+  <div id="map"></div>
+  <div class="info">
+    ※ 지도에 표시된 아이콘을 클릭하면 무더위 쉼터 정보를 확인할 수 있습니다.<br/>
+    ※ 실제 운영 여부는 해당 지자체에 문의해주세요.
+  </div>
+
+  <script>
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var lat = position.coords.latitude;
+      var lon = position.coords.longitude;
+      var container = document.getElementById('map');
+      var options = { center: new kakao.maps.LatLng(lat, lon), level: 5 };
+      var map = new kakao.maps.Map(container, options);
+
+      var userMarker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(lat, lon),
+        map: map,
+        title: '내 위치'
+      });
+
+      var shelters = [
+        { name: "00동 주민센터", lat: lat + 0.001, lon: lon + 0.001, info: "에어컨 있음 / 9:00~18:00" },
+        { name: "00도서관 쉼터", lat: lat - 0.0015, lon: lon + 0.0008, info: "에어컨 있음 / 10:00~20:00" },
+        { name: "공원 내 쉼터", lat: lat + 0.0005, lon: lon - 0.0012, info: "그늘 제공 / 야간 이용 가능" }
+      ];
+
+      shelters.forEach(function(shelter) {
+        var marker = new kakao.maps.Marker({
+          position: new kakao.maps.LatLng(shelter.lat, shelter.lon),
+          map: map,
+          title: shelter.name
+        });
+
+        var infowindow = new kakao.maps.InfoWindow({
+          content: `<div style="padding:10px;font-size:14px;"><strong>${shelter.name}</strong><br/>${shelter.info}</div>`
+        });
+
+        kakao.maps.event.addListener(marker, 'click', function() {
+          infowindow.open(map, marker);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
